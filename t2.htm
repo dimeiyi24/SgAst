@@ -1,0 +1,47 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=UTF-8"/>
+<title>Test</title>
+<style type="text/css">
+*{margin-top:0px;margin-bottom:0px;}
+table {
+  padding:0%;
+  margin-left:0%;margin-right:0%;
+  line-height:120%;
+  text-align:justify;
+  background:black;
+}
+p {}
+</style>
+</head><body style="background:black;">
+<script language="javascript">
+String.prototype.format=function(){
+  var reg=/%s/;
+  return Array.prototype.slice.call(arguments)
+  .reduce(function(p,c){return p.replace(reg,c);},this);
+}
+</script>
+<table>
+<tr style="color:white;"><th>RGB</th><th align=right>my Light</th><th align=right>Class Light</th> </tr>
+<tr style="color:white;"><td>颜色对比:0.3R+0.6G+0.1B</td><td align=right>75</td><td align=right>44</td></tr>
+</table>
+
+<p style="color:black;">颜色对比:0.3R+0.6G+0.1B</p>
+<p style="color:rgb(0,0,0);">颜色士0,0,0	0</p>
+<p style="color:rgb(128,0,0);">颜色128,0,0	38</p>
+<p style="color:rgb(0,128,0);">颜色0,128,0	75</p>
+<p style="color:rgb(0,0,128);">颜色0,0,128	14</p>
+<p style="color:rgb(128,128,0);">颜色128,128,0	75</p>
+<p style="color:rgb(0,128,128);">颜色0,128,128	75</p>
+<p style="color:rgb(128,0,128);">颜色128,0,128	38</p>
+<p style="color:rgb(255,0,0);">颜色255,0,0	76</p>
+<p style="color:rgb(0,255,0);">颜色0,255,0	149</p>
+<p style="color:rgb(0,0,255);">颜色0,0,255	29</p>
+<p style="color:rgb(255,255,0);">颜色255,255,0	149</p>
+<p style="color:rgb(0,255,255);">颜色0,255,255	149</p>
+<p style="color:rgb(255,0,255);">颜色255,0,255	76</p>
+<p style="color:rgb(255,255,128);">颜色255,255,128	149</p>
+<p style="color:rgb(128,255,255);">颜色128,255,255	149</p>
+<p style="color:rgb(255,128,255);">颜色255,128,255	113</p>
+<p style="color:rgb(255,255,255);">颜色255,255,255	149</p>
+</body></html>

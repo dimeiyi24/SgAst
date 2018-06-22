@@ -1,0 +1,124 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Test</title>
+  <style type="text/css">
+    *{
+      margin-top:0px;
+      margin-bottom:0px;
+    }
+
+    table{
+      padding:0%;
+      margin-left:0%;
+      margin-right:0%;
+      line-height:120%;
+      text-align:justify;
+      text-indent:2em;
+    }
+
+    p{
+    }
+  </style>
+</head>
+<body>
+<script language="javascript">
+  String.prototype.fmt=function(){
+    var reg=/%s/;
+    return Array.prototype.reduce.call(arguments,function(p,c){return p.replace(reg,c);},this);
+  }
+  min3I=function(a,b,c){
+    var min,idx;
+    if(a<b) {
+      min=a;
+      idx=0;
+    } else {
+      min=b;
+      idx=1;
+    }
+    if(c<min) idx=2;
+    return idx;
+  }
+  //var _lrgb=[0.299,0.587,0.114];//假定单色对颜色的贡献比例
+  var _lrgb=[0.319,0.429,0.252];//假定单色对颜色的贡献比例
+  function lgt(r,g,b){//一种特别办法来计算亮度
+    var rgb=[r,g,b];
+    var lrgb=_lrgb.slice(0);
+    var df=[0.9,0.95];//这里认为多色混合后要衰减
+    //当有多色时候,采用等量屏蔽颜色,对rgb中r=g=b的部分,亮度贡献为最亮的色G的亮度.
+    //然后再减去等量的部分,剩下的2色采用同样的办法计算亮度.
+    var mi=min3I(r,g,b),mx;
+    var r=0;
+    min=rgb[mi];
+    r+=min*lrgb[1]*df[0];//先取出r=g=b的部分,然后这部分的亮度贡献以它们的最大者G计算.
+    rgb.splice(mi,1);
+    rgb[0]-=min;
+    rgb[1]-=min;
+    lrgb.splice(mi,1);
+    if(rgb[0]<rgb[1]) {
+      mi=0;
+      mx=1;
+    } else {
+      mi=1;
+      mx=0;
+    }
+    min=rgb[mi];
+    r+=min*Math.max(lrgb[0],lrgb[1])*df[1];//剩余2色的亮者
+    r+=(rgb[mx]-min)*lrgb[mx];
+    return parseInt(r);
+  };
+  var dark=true;
+  var Bg_Fg=["white","black"];
+  function simKD(kc,isCtrl,isAlt,isShift){
+    var e=new KeyboardEvent("keydown",{
+      bubbles:true,
+      cancelable:true,
+      char:String.fromCharCode(kc),
+      key:String.fromCharCode(kc),
+      shiftKey:isShift,
+      ctrlKey:isCtrl,
+      altKey:isAlt
+    });
+    Object.defineProperty(e,'keyCode',{get:function(){ return this.keyCodeVal; }});
+    e.keyCodeVal=kc;
+    document.dispatchEvent(e);
+  }
+  document.onkeydown=function(e){
+    var k=e.keyCode;
+    switch(k) {
+      case 67://C
+        document.body.style.background=Bg_Fg[Number(dark= !dark)];
+        document.getElementById('cap').style.color=Bg_Fg[Number(!dark)];
+        break;
+      case 52://4
+        if(e.ctrlKey) {
+          alert(3);
+        }
+        break;
+    }
+  };
+  document.body.style.background='black';
+  var tsCol=[[0,0,0],
+    [128,0,0],[0,128,0],[0,0,128],
+    [128,128,0],[0,128,128],[128,0,128],[128,128,128],
+    [0,168,0],
+    [255,0,0],
+    [0,255,0],[0,0,255],[0,0,206],
+    //[0,160,0],
+    [255,255,0],[0,255,255],[255,0,255],
+    [255,255,128],[128,255,255],[255,128,255],[255,255,255]
+  ];
+  var s='<p id="cap" style="color:white;">颜色对比:%sR+%sG+%sB</p>\r\n'.fmt(_lrgb[0],_lrgb[1],_lrgb[2])
+    +'<table>\r\n'
+    +'<tr style="color:white;"><th>RGB</th><th align=right>my Light</th><th align=right>Class Light</th> </tr>\r\n';
+  +'';
+  for(var i=0; i<tsCol.length; ++i){
+    var r=tsCol[i][0],g=tsCol[i][1],b=tsCol[i][2];
+    s+='<tr style="color:rgb(%s,%s,%s);"><td>颜色%s,%s,%s</td><td align=right>%s</td><td align=right>%s</td></tr>'
+      .fmt(r,g,b,r,g,b,lgt(r,g,b),parseInt(0.299*r+0.587*g+0.114*b));
+  }
+  s+='</table>';
+  document.write(s);
+</script>
+</body>
+</html>

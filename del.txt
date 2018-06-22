@@ -1,0 +1,37 @@
+function HSL(h,s,l) {
+  this.h=h;this.s=s;this.l=l;
+  this.adLight=function (rdo) {this.l*=rdo;};
+  this.toRGB=function () {
+    var h=this.h/240,s=this.s/240,l=this.l/240;
+    //parseInt是必须的,不然转成Css小数为非法值
+    if (s==0) return new _RGB({r:parseInt(255*l),g:parseInt(255*l),b:parseInt(255*l)});
+    var t1,t2,t3,v,rgb=[];
+    t2=l<0.5?l*(1+s):l+s-l*s;
+    t1=2*l-t2;
+    for (i=0;i<3;++i) {
+      t3=h+1/3*(1-i);
+      t3<0&&t3++;t3>1&&t3--;
+      if (6*t3<1) v=t1+(t2-t1)*6*t3;
+      else if (2*t3<1) v=t2;
+      else if (3*t3<2) v=t1+(t2-t1)*(2/3-t3)*6;
+      else v=t1;
+      rgb[i]=v*255;
+    }
+    return new _RGB({r:parseInt(rgb[0]),g:parseInt(rgb[1]),b:parseInt(rgb[2])});
+  }
+};
+this.toHSL=function () {
+  var r=this.r,g=this.g,b=this.b;
+  var mx=Math.max(r,g,b),dt=mx-Math.min(r,g,b);
+  var ll=Math.min(r,g,b)+mx;
+  var h=0,s=0,l=ll*240/510;
+  if (dt>0) {
+    if (mx==r) {h=(g-b)*40/dt;if (h<0) h+=240;}
+    else if (mx==g) h=80+(b-r)*40/dt;
+    else h=160+(r-g)*40/dt;
+    if (ll<=255) s=dt*240/ll;
+    else s=dt*240/(510-ll);
+  };
+  return new HSL(h,s,l);
+}
+this.light=function () {return parseInt(0.299*this.r+0.587*this.g+0.114*this.b);};

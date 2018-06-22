@@ -1,0 +1,19 @@
+﻿<html>
+<head><meta charset="utf-8"/> </head>
+<body align=center>
+<textarea style='width:100%;height:80%'></textarea>
+<input style="width:100px"type="button" onClick="window.close()"value="取消"/>
+<input style="width:100px"type="button" onClick="setCfg()" value="确定"/>
+<script src='comm.js'></script>
+<script>
+function setCfg() {
+  localStorage['fillCfg']=document.getElementsByTagName('textarea')[0].value;
+  sogouExplorer.tabs.getSelected(function (tb) {
+    sogouExplorer.tabs.sendRequest(tb.id,inis2json(localStorage['fillCfg']))});
+  window.close();
+}
+var scfg=localStorage['fillCfg'];
+if (scfg) document.getElementsByTagName('textarea')[0].value=scfg;
+</script>
+</body>
+</html>

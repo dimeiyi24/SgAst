@@ -1,0 +1,88 @@
+8.使用addRule、insertRule
+// 在原有样式操作
+document.styleSheets[0].addRule('.box','height: 100px');
+document.styleSheets[0].insertRule('.box {height: 100px}',0);
+// 或者插入新样式时操作
+var styleEl=document.createElement('style'),
+styleSheet=styleEl.sheet;
+styleSheet.addRule('.box','height: 100px');
+styleSheet.insertRule('.box {height: 100px}',0);
+document.head.appendChild(styleEl);
+function inc(u) {
+  var src=document.createElement("script");
+  src.src=u;
+  document.head.appendChild(src);
+}
+uicss-cn
+{
+  height:580px;overflow-y:scroll;
+  scrollbar-face-color:#EAEAEA;
+  scrollbar-shadow-color:#EAEAEA;
+  scrollbar-highlight-color:#EAEAEA;
+  scrollbar-3dlight-color:#EAEAEA;
+  scrollbar-darkshadow-color:#697074;
+  scrollbar-track-color:#F7F7F7;
+  scrollbar-arrow-color:#666666;
+}
+window.onload中.则有可能会出现你说的情况,因为页面中所有的元素均已加载完成
+window.getSelection().getRangeAt(0).surroundContents(document.createElement("span"));
+但如果是执行在docuemnt.ready
+□ sogou
+sogouExplorer.windows.getAll({populate:true},function (wins) {
+  for (i in wins) { var w=wins[i];
+    for (j in w.tabs) { var t=w.tabs[j];
+      sogouExplorer.tabs.sendRequest(t.id,{msg:"refresh_pref"});
+    }
+  }
+});
+□ box-sizing
+content-box
+宽度和高度分别应用到元素的内容框,在宽度和高度之外绘制元素的内边距和边框.
+border-box
+内边距和边框都将在已设定的宽度和高度内进行绘制.
+□ 换行
+使用display:block; 将span转成块级元素即可
+□ 多线程
+Worker
+不能操作Dom
+console.log(window.navigator.hardwareConcurrency);
+无法访问全局变量或是全局函数；
+□ 多线程
+□ 文件
+FileReader FileWriter
+FileReader要传入一个file参数,任意指定路径都可以的
+FileWriter估计比较麻烦,如果只是导出文件
+可以用new
+const url = URL.createObjectURL(
+    new Blob([JSON.stringify(object, null, 2)], {
+      type: 'data:application/json;charset=utf-8'
+    })
+  )
+然后再browser.downloads.download的办法
+□ kbd
+kbd {
+  color:#3f51F5;
+  font-family:roboto,sans-serif;
+  font-weight:normal;
+  letter-spacing:0.56px;
+  -webkit-font-smoothing:antialiased;
+  border:1px solid #3f51F5;
+  border-bottom:5px solid;
+  border-left:3px solid;
+  padding:0px 4px;
+  border-radius:4px;
+  border-bottom-left-radius:3px;
+  box-shadow:0 3px 1px-2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12);
+  margin:auto 1px;
+}
+□ fast Remove
+var myNode = document.getElementById("foo");
+myNode.innerHTML = '';
+Option 2 (much faster):
+var myNode = document.getElementById("foo");
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+□ requestAnimationFrame
+□ sogouexplorer
+ 'coreType': 'webkit'

@@ -1,0 +1,39 @@
+在html中,元素主要分为行内元素和块级元素;
+行内元素指的是书写完成后不会自动换行,并且元素没有宽和高.
+块级元素写完后会自动换行,有宽高可以修改.
+还有一种特殊的元素叫做行内块元素.
+大致分内是:
+行内元素有:heda   meat   title  lable  span  br  a   style  em  b  i   strong
+块级元素有:body  from  select  textarea  h1-h6 html table  button  hr  p  ol  ul  dl  cnter  div
+行内块元素常见的有: img  input  td
+以上就是常见的行内元素和块级元素,还有常见的行内块元素
+□ flex
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+□ 属性继承
+不可继承
+display、margin、border、padding、background、height、min-height、max- height、width、min-width、max-width、overflow、position、left、right、top、 bottom、z-index、float、clear、table-layout、vertical-align、page-break-after、 page-bread-before和unicode-bidi。
+如果子节点能继承父节点的border属性，那么也会有一个红色边框。
+所有元素可继承：visibility和cursor。
+内联元素可继承：letter-spacing、word-spacing、white-space、line-height、color、font、 font-family、font-size、font-style、font-variant、font-weight、text- decoration、text-transform、direction。
+块状元素可继承：text-indent和text-align。
+列表元素可继承：list-style、list-style-type、list-style-position、list-style-image。
+表格元素可继承：border-collapse。
+□ 下载
+有些文件链接默认是浏览如图片,htm,要强制下载可以用download属性
+<a href='t.png' download>下载</a>
+□ 性能
+添加元素
+比较直接appendChild createDocumentFragment后添加 拼接字符串后一次innerHTML.
+在搜狗4.2 Chrome 28,innerHTML最快,而且前两者快的多.
+而在搜狗8是Chrome 58,依然是innerHTML最快.
+而在Chrome65中,三者没有多大区别,直接appendChild最快,比innerHTML快一倍,而它的实际渲染速度因该比Chrome28 innerHTML略快一点,不过返回速度要比28快5倍.
+这个返回速度意义就是,如果你实时过滤一个列表,返回后就可以输入下一个字符了.
+当然,这样就还慢,就要用到某种异步的方法了.
+不过,我找到了中通用的快速添加方法,添加前style.display='none',
+添加后style.display='initial'
+当然这是添加简单元素的测试,添加复杂嵌套标签的时候,innerHTML要快的多,估计要快5-10倍.
+◇ 最好的办法是用VirtualTable的办法
+每次只显示要渲染的内容,滚动条用一个额外的嵌套div来模拟,不过由于dom中的内容是每样高度是不一样,因此实现起来还是比较麻烦,最多只能不精确的模拟,如果要计算每个行的高度,那么最后开销和渲染出来就差不多了.

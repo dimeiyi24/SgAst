@@ -1,0 +1,78 @@
+*{
+  margin:0;
+  font-size:10pt;
+}
+::selection{
+  background:#009500;
+}
+html, body{
+  color:inherit;
+  background:inherit;
+}
+.dmyDiv{
+  width:100%;
+  float:left;
+  overflow-y:hidden;/*这里必须,不然搜狗8有问题*/
+  color:inherit;
+  background-color:inherit;
+}
+input{
+  border:2px solid #616161;
+}
+input:focus{
+  border:2px solid #3388FF;
+}
+::-webkit-scrollbar{
+  width:12px;
+  height:12px;
+}
+::-webkit-scrollbar-track{
+  background:rgb(107, 107, 107);
+  border-radius:6px;
+}
+::-webkit-scrollbar-track:hover{
+  background:rgb(130, 130, 130);
+}
+::-webkit-scrollbar-thumb{
+  background:rgb(80, 80, 80);
+  border-radius:6px;
+}
+::-webkit-scrollbar-thumb:hover{
+  background:rgb(0, 0, 0);
+  border:1px solid #3388FF
+}
+.hdRight::-webkit-input-placeholder{
+  text-align:right;
+}
+.dmyInr{
+  color:inherit;
+  background:inherit;
+  margin:0 !important;
+  padding:2px !important;
+  height:25px !important;
+  vertical-align:middle;
+}
+td, th{
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+@font-face{
+  font-family:'Material Icons';
+  font-style:normal;
+  font-weight:400;
+  src:local('Material Icons'),
+  local('MaterialIcons-Regular'),
+  url(./MaterialIcons-Regular.woff2) format('woff2'),
+  url(MaterialIcons-Regular.woff) format('woff');
+}
+.ico{
+  /*content:'\e2c7';*/
+  font-family:'Material Icons';
+  font-weight:normal;
+  font-style:normal;
+  font-size:16px;
+  display:inline-block;
+  line-height:1;
+  vertical-align:middle;
+  text-rendering:optimizeLegibility;
+}

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<script src='comm.js'></script>
+<script src='map.js'></script>
+<script src='TmTst.js'></script>
+<script src='Env.js'></script>
+<script src='tree.js'></script>
+<script src='Au.js'></script>
+<script>
+  //□ sogouExplorer
+  function sdReq(tid,dt,rf){
+    rf?sogouExplorer.tabs.sendRequest(tid,dt,rf):sogouExplorer.tabs.sendRequest(tid,dt);
+  }
+  function sdCrtReq(dt,rf){
+    sogouExplorer.tabs.getSelected(function(tb){sdReq(tb.id,dt,rf);});
+  }
+  function sdCmd(tid,cmd,rf){sdReq(tid,{cmd:cmd},rf);}
+  function sdCrtCmd(cmd,rf){sdCrtReq({cmd:cmd},rf);}//Send to CrtTab
+  function pop(msg){sdCrtReq({cmd:'pop',msg:msg});}
+  function lg(msg){sdCrtReq({cmd:'lg',msg:msg});}
+  function insJs(){
+    for(var i=1; i<arguments.length; ++i){
+      var ar=arguments[i].fn2Ext().isEpy?arguments[i]+'.js':arguments[i];
+      sogouExplorer.tabs.executeScript(arguments[0],{file:ar,allFrames:false});
+    }
+  }
+  function inject(tb){
+    //排除about:blank的情况,这里tb.status总是为undefined
+    sogouExplorer.tabs.insertCSS(tb.id,{file:"cst.css",allFrames:true});
+    insJs(tb.id,'comm','TmTst','MPTsk','tree',
+      'Str\\GB_BIG5_Tab','Str\\PinYin_Tab','color','key','Mch','Elmt','Mutable',
+      'Tbl','form\\fmBs','form\\fmChs','form\\fmTbs','form\\fmFav','form\\fmHis','form\\fmPop',
+      'form\\fmLog','form\\fmMsg','form\\fmCls','form\\fmMltSrh','form\\fmSrh','srh',
+      'Au'
+      ,'darker','dom','win','func','smoothscroll');
+    //虽然executeScript是异步,不过对所有executeScript,猜测它们是依序执行的,因此,可以把sdReq放在
+    //最后一个executeScript的回调里,保证顺序.
+    //code最少要有一个;,不然不会执行
+    sogouExplorer.tabs.executeScript(tb.id,{code:';',allFrames:false},function(){
+      sdReq(tb.id,{cmd:'init',data:[inis2json(localStorage['fillCfg']),RunTmV,opt]});
+    });
+  }
+  const RunTmV={//runtime var
+    srh:false
+  }
+  //由于关闭时url,title已经被清除,
+  var His;
+  var Tabs=new map(),lstCls=[];
+  //不知为什么用TrNd在返回数据时会出错,只能用这种办法
+  var mltSrh=new TrNdNP(null);
+  mltSrh.add({ti:'通用'},{ti:'商品'},{ti:'软件'},{ti:'Src'},{ti:'视频'});
+  mltSrh.cld[0].add({ti:'baidu',url:'https://www.baidu.com/s?wd=%s'},
+    {ti:'Google',url:'https://www.google.com.hk/search?newwindow=1&q=%s'},
+    {ti:'Sogou',url:'https://www.sogou.com/sogou?query=%s'});
+  mltSrh.cld[1].add({
+      ti:'taobao',url:'https://s.taobao.com/search?sort=renqi-desc&q=%s'
+    },{ti:'jd',url:'http://search.jd.com/Search?enc=utf-8&keyword=%s'},
+    {ti:'dangdang',url:'http://search.dangdang.com/?key=%s'});
+  var tbCpl_Fn=[];//有时 tab complete Func
+  var opt={lstClsMax:256,usSnd:true};
+  var srlzLst=['lstCls','opt'];//srlzLst定义需序列化的变量名
+  function init(){
+    for(var i=0; i<srlzLst.length; ++i){
+      var si=srlzLst[i];
+      var v=frLS('dmy.'+si);
+      if(v) eval(si+'=v;');
+      eval(si+'.srlzNm="dmy.'+si+'"');
+    }
+  }
+  function selTb(tid){sogouExplorer.tabs.update(tid,{selected:true});}
+  function clsTb(tid){sogouExplorer.tabs.remove(tid);}
+  function rmvBm(id){sogouExplorer.bookmarks.removeTree(id);}
+  function rmvHis(url){
+    His.rmvIf(function(v){return v.url==url;});
+    sogouExplorer.history.deleteUrl({url:url},function(){});
+  }
+  function stCore(tid,wbkt){
+    sogouExplorer.tabs.update(tid,{coreType:wbkt?'Webkit':'Trident'});
+  }
+  function opUrl(url,sel,wbkt){//coreType:T Trident Webkit
+    //Bug selected后无法获得焦点,这是sogou 4的bug,目前没有解法.
+    var cp={url:url,selected:sel,active:sel};
+    if(wbkt!==undefined) cp.coreType=wbkt?'Webkit':'Trident';
+    sogouExplorer.tabs.create(cp);
+  }
+  function opLst(){
+    var url=lstCls.pop();
+    if(url) opUrl(url,true);
+  }
+  function addScr(tid,cif){}//sogouExplorer.tabs.move(tid,{index:-1});
+  function mvTab(dlt){
+    sogouExplorer.tabs.getSelected(function(tb){
+      sogouExplorer.tabs.move(tb.id,{index:tb.index.nxMod(dlt,Tabs.cnt)});
+    })
+  }
+  function sortTab(fcp,usRsv){//use reverse
+    sogouExplorer.tabs.getAllInWindow(function(tb){
+      var mI,bSt=false;//bSorted
+      for(var i=0; i<tb.length-1; i++){
+        mI=i;//查找最小值
+        for(j=i+1; j<tb.length; j++) if(fcp(tb[j],tb[mI])) bSt=true, mI=j;
+        sogouExplorer.tabs.move(tb[mI].id,{index:i});
+        tb.move(mI,i);
+      }
+      if(usRsv&& !bSt) sortTab(function(a,b){return !fcp(a,b);});
+    });
+  }
+  function addGrp(){
+    sogouExplorer.tabs.getAllInWindow(function(tb){
+      var s='';
+      if(grpN=prompt('请输入组名:',''))
+        for(var i=0; i<tb.length; ++i) s+=tb[i].url+'$$';
+      var o=inis2json(localStorage['grp']||'[grp]\r\n');
+      o['grp'][grpN]=s.slice(0,-2);
+      localStorage['grp']=json2inis(o);
+      alert(localStorage['grp']);
+    });
+  }
+  function uniqueTab(){
+    with(sogouExplorer.tabs) getAllInWindow(function(tb){
+      var hs={};
+      for(var i=tb.length-1; i>=0; --i)
+        if(hs[tb[i].url]) remove(tb[i].id); else hs[tb[i].url]=true;
+    })
+  }
+  function clsOtr(){
+    with(sogouExplorer.tabs)
+      getSelected(function(tb){
+        getAllInWindow(function(tbs){
+          for(var i=tbs.length-1; i>=0; --i) if(tbs[i].id!=tb.id) remove(tbs[i].id);
+        });
+      });
+  }
+  function addEvt(){
+    //为什么要这么绕,因为它提供的接口就是混乱的,一会提供tab,一会又是tid
+    sogouExplorer.tabs.onCreated.addListener(function(tb){
+      Tabs.put(tb.id,{url:tb.url,ti:tb.title});
+      lstCls.rmvIf(function(v){return v.url&&v.url==tb.url;});
+    });
+    sogouExplorer.tabs.onRemoved.addListener(function(tid,ri){
+      var tif=Tabs.v(tid),url=tif.url;
+      //对C:\a.htm之类的本地文件无法打开,因此lstCls排除
+      if(url&& !url.isEpy&&url!='se'&&url.indexOf('://')!= -1) {
+        lstCls.rmvIf(function(v){return v.url&&v.url==url;});
+        lstCls.add({url:url,ti:tif.ti}).limt(opt.lstClsMax);
+      }
+      Tabs.rmv(tid);
+    });
+    sogouExplorer.tabs.onUpdated.addListener(function(tid,cif,tb){
+      //还有一种undefined,当在页面内跳转,或前进/后退时,就会是这种.
+      if(cif.status!='loading') Tabs.put(tid,{url:tb.url,ti:tb.title});
+      if(cif.status!='complete') return;
+      inject(tb);
+    });
+    sogouExplorer.extension.onRequest.addListener(function(req,sd,rsp){
+        switch(req.cmd) {
+        case 'svDt':
+          eval(req.syncNm+'=req.data');
+          break;
+        case 'svLDt':
+          var dt=req.data;
+          sv2LS(dt,req.syncNm);
+          break;
+        case 'uniqueTab':
+          uniqueTab();
+          break;
+        case 'clsOtr':
+          clsOtr();
+          break;
+        case 'mvPr':
+          mvTab(-1);
+          break;
+        case 'mvNx':
+          mvTab(1);
+          break;
+        case 'tgStsBar':
+          var crtCh;
+          //由于没有isStsBarVis之类的函数,这用检测变换后clientHeight是否改变来判断
+          sdCrtCmd('gCltH',function(v){crtCh=v});
+          sogouExplorer.windows.getCurrent(function(w){
+            sogouExplorer.command.showStatusBar(w.id,false,function(){
+              sdCrtCmd('gCltH',function(v){
+                if(v==crtCh) sogouExplorer.command.showStatusBar(w.id,true,function(){});
+              });
+            });
+          });
+          break;
+        case 'tgCore':
+          sogouExplorer.tabs.getSelected(function(tb){stCore(tb.id,tb.coreType!='Webkit');});
+          break;
+        case 'dupCrt'://Duplicate Crt Tab
+          sogouExplorer.tabs.getSelected(function(tb){opUrl(tb.url,tb.coreType=='Webkit');});
+          break;
+        case 'insCss':
+          insCss(sd.tab.id);
+          break;
+        case 'sortTab':
+          if(Env.SgVer==4) pop('该版本无法移动标签!');
+          else sortTab(function(a,b){return a.url.toLowerCase()<b.url.toLowerCase();},true);
+          break;
+        case 'addGrp':
+          addGrp();
+          break;
+        case 'clsTb':
+          clsTb(req.tid);
+          break;
+        case 'selTb':
+          selTb(req.tid);
+          break;
+        case 'opUrl':
+          opUrl(req.url,req.sel);
+          break;
+        case 'rmvBm':
+          rmvBm(req.id);
+          break;
+        case 'rmvHis':
+          rmvHis(req.url);
+          break;
+          // case 'opLst':opLst();break;
+        case 'chsLst' :
+          rsp({data:lstCls,opt:frLS('chsLstOpt')});
+          break;
+        case 'chsTbs':
+          sogouExplorer.tabs.getAllInWindow(function(tbs){
+            rsp({data:tbs,opt:frLS('chsTbsOpt')});
+          });
+          break;
+        case 'chsFav':
+          sogouExplorer.bookmarks.getTree(function(bmtr){
+            rsp({data:bmtr,opt:frLS('chsFavOpt')});
+          });
+          break;
+        case 'chsHis':
+          if(His) rsp({data:His,opt:frLS('chsHisOpt')}); else pop('历史记录未加载完成!');
+          break;
+        case 'chsMltSrh':
+          rsp({data:mltSrh,opt:frLS('chsMltSrhOpt')});
+          break;
+        }
+      }
+    );
+    //由于没有app.onQuit的事件,用当窗口关闭且窗口数为0时保存.
+    sogouExplorer.windows.onRemoved.addListener(function(wid){
+      sogouExplorer.windows.getAll(function(wins){
+        if(!wins.length) {
+          for(var i=0; i<srlzLst.length; ++i){
+            eval('sv2LS('+srlzLst[i]+');');
+          }
+        }
+      });
+    });
+  }
+  //sogouExplorer.tabs.onSelectionChanged.addListener(function (tid) {addScr(tid);});
+  init();
+  addEvt();
+  sogouExplorer.tabs.getAllInWindow(function(tbs){
+    for(var i=tbs.length-1; i>=0; --i){
+      inject(tbs[i]);
+      lstCls.rmvIf(function(v){return v.url&&v.url==tbs[i].url;});
+    }
+  });
+  sogouExplorer.history.search({text:'',maxResults:214748364},
+    function(his){His=his;});//由于加载10W+记录要2s,因此这个优化还是有必要的.
+  sogouExplorer.history.onVisited.addListener(function(hi){His.push(hi);});
+</script>
+</body>
+</html>

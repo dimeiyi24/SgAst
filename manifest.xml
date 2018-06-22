@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension>
+	<id>dimeiyi24.assistant</id>
+	<name>搜狗助手</name>
+	<version>1</version>
+    <request_api_version>5</request_api_version>
+	<author>dimeiyi24</author>
+	<description>搜狗助手</description>
+	<show_icon>true</show_icon>
+	<popup page="pop.htm" width="600" height="600" />
+	<background page="background.htm" />
+	<permissions>
+		<permission>sogou</permission>
+		<permission>history</permission>
+		<permission>bookmarks</permission>
+		<permission>downloads</permission>
+		<permission>tabs</permission>
+		<permission>management</permission>
+		<permission>runtime</permission>
+		<permission>webRequest</permission>
+	</permissions>
+    <!--<content_security_policy>-->
+        <!--default-src 'self'  'unsafe-inline';-->
+    <!--</content_security_policy>-->
+</extension>

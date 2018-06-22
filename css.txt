@@ -1,0 +1,38 @@
+□ 尺寸
+left right不能同时定义
+按说定义了left和right,width就定了,但是并非如此,当二者同时定义时,只能有一个有效.
+不过可以通过定义left/right 和width来计算另外一边.
+□ !important
+important样式几乎是无法修改,触发遍历styleSheets,找到特定的cssRules,不过chrome无法支持外部样式.
+而且对在元素中直接写的css,只能通过cssText来修改.
+□ Warp
+white-space: nowrap//是否换行
+word-wrap:normal|break-word;//是否打断单词
+word break:normal|break-all|keep-all//换行规则
+-webkit-line-clamp:n最多显示N行
+□ scrollbar
+整体部分，::-webkit-scrollbar；
+两端按钮，::-webkit-scrollbar-button；
+外层轨道，::-webkit-scrollbar-track；
+内层轨道，::-webkit-scrollbar-track-piece；
+滚动滑块，::-webkit-scrollbar-thumb；
+边角，::-webkit-scrollbar-corner。
+但是我们平时开发中只用下面3 个属性：
+::-webkit-scrollbar {/*血槽宽度*/
+  width:8px;height:8px;
+}
+::-webkit-scrollbar-thumb {/*拖动条*/
+  background-color:rgba(0,0,0,.3);border-radius:6px;
+}
+::-webkit-scrollbar-track {/*背景槽*/
+  background-color:#ddd;border-radius:6px;
+}
+
+□ Ico
+可用图标字体技术
+用content比用标签直接写字体要要好些,无法复制,而且渲染要快写,并且和原来的文本更融洽,否则会尺寸可能会和原来的不一致.
+对齐设置为vertical-align:middle;无论如何要绝对对齐是不可能的,因为每个字体的重心就不同,即使同一个字体,小写字母,大写字母,汉字的平均重心也不相同,对齐了这个就无法对齐那个.
+□ 颜色
+background说是不能继承,但是实际是可以继承的.
+由于低版本没有CSS变量,想要统一改变属性,可以通过修改styleSheets的办法.
+另外若只修改,还可以修改css的systemcolor,由于ButtonFace之类的系统变量一般没人用,可以当全局变量来用.

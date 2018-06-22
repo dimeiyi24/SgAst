@@ -1,0 +1,27 @@
+搜狗4.2 Chrome 28
+□ UI
+□ Key
+Any HotKey//Use KeyDown keyUp to Maintenance Keys
+□ fmChs
+single
+□ Mch
+多栏
+Hw Pinyin
+Similarity
+□ Lst
+□ MltiSrh
+□ FavUrl
+只有Tabs有favIconUrl,其它都没,最好用WebAPI来获取.
+http://statics.dnspod.cn/proxy_favicon/_/favicon?domain=
+http://favicon.byi.pw/?url=h5.m.taobao.com
+□ His
+onpopstate
+□ LstCls
+□ Touble
+□ Darker
+shadow border color
+canvas
+□ Note
+extid:50351789
+His:9W项 Its: 1161	showTb: 15201
+Fav 900项:pos: 0	Its: 25	showTb: 209

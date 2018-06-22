@@ -1,0 +1,112 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Fa</title>
+  <link rel="stylesheet" type="text/css" href="Res/material-icons.css"/>
+  <script src='TmTst.js'></script>
+  <script src='comm.js'></script>
+  <script src='Tbl.js'></script>
+  <script type="text/javascript">
+    function addButton(){
+      var html="<input type=\"button\" value=\"New\" onclick=\"newButton();\">";
+      var p=document.createElement('p');
+      p.innerText="haah";
+      document.body.appendChild(p);
+      // document.getElementById("add").innerHTML=html;
+    }
+    function newButton(){alert("我是新加的按钮");}
+    function addFrag(){
+      var tb=document.getElementsByTagName('table')[0];
+      tb.innerHTML='';
+      var tm=new TmTst();
+      tb.style.display='none';
+      var frag=document.createDocumentFragment();
+      for(var i=0; i<100000; i++){
+        var el=document.createElement('p');
+        el.textContent=i;
+        frag.appendChild(el);
+      }
+      tb.appendChild(frag);
+      tb.style.display='initial';
+      tm.msg();
+    }
+    function addCld(){
+      var tb=document.getElementsByTagName('table')[0];
+      if(tb) tb.innerHTML='';
+      var tm=new TmTst();
+      var tb=new Tbl(document,''),row=[];
+      tb.stopRend();
+      tb.sCol({nm:'key',w:'2%',align:'center'},{nm:'title',w:'40%',align:'left'},{nm:'url',w:'40%',align:'left'});
+      for(var i=0; i<10000; i++){
+        row=[];
+        var em=document.createElement('span');
+        em.style.fontWeight='bold';
+        em.style.fontSize='12pt';
+        em.textContent=i;
+        row.push(em);
+        em=document.createElement('span');
+        em.innerHTML="sdf兽性大发史蒂芬孙 34 vs地方士大夫士大夫";
+        row.push(em);
+        em=document.createElement('span');
+        em.innerHTML='http://h5.m.taobao.com/mlapp/cart.html?pds=cart%23h%23taojia';
+        row.push(em);
+        tb.aRow(row);
+      }
+      document.body.appendChild(tb.elmt);
+      tb.sttRend();
+      tm.msg();
+    }
+    function innHtm(){
+      var tb=document.getElementsByTagName('table')[0];
+      if(tb) tb.innerHTML=''; else tb=document.createElement('table');
+      var tm=new TmTst();
+      tb.style.tableLayout='fixed';
+      tb.style.width='100%';
+      tb.style.color='inherit';
+      document.body.appendChild(tb);
+      tb.style.display='none';
+      var r='';
+      var dlt;
+      for(var i=0; i<10000; i++){
+        dlt='<tr><td style="width: 2%; text-align: center;" class=""><span style="font-weight: bold; font-size: 12pt;" class="">'+i+'</span></td><td style="width: 40%; text-align: left;" class=""><span class="">sdf兽性大发史蒂芬孙 34 vs地方士大夫士大夫</span></td><td style="width: 40%; text-align: left;" class=""><span class="">http://h5.m.taobao.com/mlapp/cart.html?pds=cart%23h%23taojia</span></td></tr>';
+        r+=dlt;
+      }
+      tb.innerHTML=r;
+      tb.style.display='initial';
+      tm.msg();
+    }
+    function test(){
+    }
+    function innHtmJoin(){
+      var tb=document.getElementsByTagName('table')[0];
+      tb.innerHTML='';
+      var tm=new TmTst();
+      tb.style.display='none';
+      var r=[];
+      for(var i=0; i<100000; i++) r.push('<p>'+i+'</p>');
+      tb.innerHTML=r.join('');
+      tb.style.display='initial';
+      tm.msg();
+    }
+  </script>
+</head>
+<body>
+<div>
+  <i class="ico">folder</i>
+  <audio id="a" src="1.mp3" autoplay></audio>
+  <input type="button" value="addCld" onclick="addCld();">
+  <input type="button" value="addFrag" onclick="addFrag();">
+  <input type="button" value="innHtm" onclick="innHtm();">
+  <input type="button" value="innHtmJoin" onclick="innHtmJoin();">
+  <input type="button" value="test" onclick="test();">
+  <input type="file" value="File">
+  <input type="number" value="33"/>
+  <input type="email" value="a@tom.com"/>
+  <a href='1.rar' >bb</a>
+  <textarea rows=10 cols=30>
+我是一个文本框。
+</textarea>
+</div>
+<div id="add"></div>
+</body>
+</html>
